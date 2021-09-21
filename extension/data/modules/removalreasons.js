@@ -156,12 +156,6 @@ export default new Module({
             thingSubreddit,
             isComment = false; // default to false for new Reddit
 
-        // If the shift key was pressed, remove without a removal reason,
-        // unless this is the explicit "Add removal reason" button.
-        if (event.shiftKey && !$button.hasClass('tb-add-removal-reason')) {
-            return;
-        }
-
         // For now, removals on Toolbox-generated posts/comments work the same way as on old Reddit (without jsAPI)
         if (TBCore.isOldReddit || $button.is('.tb-submission-button-remove, .tb-comment-button-remove')) {
             const $yes = $button.find('.yes')[0],
@@ -185,6 +179,12 @@ export default new Module({
                 thingID = postDetails.data.id;
                 thingSubreddit = postDetails.data.subreddit.name;
             }
+        }
+
+        // If the shift key was pressed, remove without a removal reason,
+        // unless this is the explicit "Add removal reason" button.
+        if (event.shiftKey && !$button.hasClass('tb-add-removal-reason')) {
+            return;
         }
 
         const info = await TBCore.getApiThingInfo(thingID, thingSubreddit, false);
