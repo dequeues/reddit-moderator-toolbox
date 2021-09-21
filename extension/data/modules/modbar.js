@@ -3,6 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
+import * as TBApi from '../tbapi.js'
 
 export default new Module({
     name: 'Modbar',
@@ -102,7 +103,8 @@ export default new Module({
     // Doing it like this because it means we don't have to mess with reddit css
     const $footerblock = $('<div id="tb-footer-block">').appendTo($body);
 
-    if (!window._TBCore.logged || TBCore.isEmbedded) {
+    // Don't add the mod bar to embedded pages or if not logged in
+    if (TBCore.isEmbedded || !await TBApi.getCurrentUser()) {
         return;
     }
 

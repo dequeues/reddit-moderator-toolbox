@@ -557,7 +557,7 @@ function startUsernotes ({maxChars, showDate}) {
         let note = {
             note: noteText.trim(),
             time: new Date().getTime(),
-            mod: window._TBCore.logged,
+            mod: await TBApi.getCurrentUser(),
             link,
             type,
         };

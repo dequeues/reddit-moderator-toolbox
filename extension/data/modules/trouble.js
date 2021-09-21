@@ -1,5 +1,6 @@
 import {Module} from '../tbmodule.js';
 import * as TBCore from '../tbcore.js';
+import {getCurrentUser} from '../tbapi.js';
 
 const self = new Module({
     name: 'Trouble Shooter',
@@ -151,13 +152,13 @@ function init ({negHighlightThreshold, highlightControversy, expandOnLoad, highl
         }
     }
 
-    function score () {
+    async function score () {
         const $this = $(this),
               $thing = $this.closest('.thing');
         let neg_thresh = negHighlightThreshold;
 
         // lower the threashold by one for user's comments
-        if (RegExp(`/${window._TBCore.logged}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
+        if (RegExp(`/${await getCurrentUser()}\\b`).test($thing.children('.entry').find('.author')[0].href)) {
             --neg_thresh;
         }
 

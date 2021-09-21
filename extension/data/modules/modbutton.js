@@ -420,7 +420,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
     }
 
     // Mod button clicked
-    $body.on('click', '.global-mod-button', function (event) {
+    $body.on('click', '.global-mod-button', async function (event) {
         const benbutton = event.target; // huehuehue
         const $benbutton = $(benbutton);
 
@@ -456,7 +456,7 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
                     rules: subreddit ? TBCore.link(`/r/${subreddit}/about/rules`) : '',
                     sidebar: subreddit ? TBCore.link(`/r/${subreddit}/about/sidebar`) : '',
                     wiki: subreddit ? TBCore.link(`/r/${subreddit}/wiki/index`) : '',
-                    mod: window._TBCore.logged,
+                    mod: await TBApi.getCurrentUser(),
                 };
                 openModPopup(event, info);
             } else {

@@ -837,11 +837,11 @@ self.queuetoolsOld = function ({
             TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TBui.FEEDBACK_NEUTRAL);
 
             TBCore.forEachChunked(
-                $('.subscription-box a.title'), 20, 100, elem => {
+                $('.subscription-box a.title'), 20, 100, async elem => {
                     const $elem = $(elem),
                           sr = $elem.text();
 
-                    TBStorage.getCache('QueueTools', `${prefix + window._TBCore.logged}-${sr}`, '[0,0]').then(cacheData => {
+                    TBStorage.getCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, '[0,0]').then(cacheData => {
                         const data = JSON.parse(cacheData);
 
                         modSubs.push(sr);
@@ -854,11 +854,11 @@ self.queuetoolsOld = function ({
                         }
 
                         function updateModqueueCount (sr) {
-                            TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
+                            TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(async d => {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);
-                                TBStorage.setCache('QueueTools', `${prefix + window._TBCore.logged}-${sr}`, `[${items},${new Date().valueOf()}]`);
+                                TBStorage.setCache('QueueTools', `${prefix + TBApi.getCurrentUser()}-${sr}`, `[${items},${new Date().valueOf()}]`);
                                 $(`.subscription-box a[href$="/r/${sr}/about/${page}"]`).text(d.data.children.length).attr('count', d.data.children.length);
                             });
                         }

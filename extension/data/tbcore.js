@@ -1093,10 +1093,10 @@ function findMessage (object, searchID) {
     return found;
 }
 
-export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve => {
+export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(async resolve => {
     if (id.startsWith('t4_')) {
         const shortID = id.substr(3);
-        TBApi.getJSON(`/message/messages/${shortID}.json`).then(response => {
+        TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {
             TBStorage.purifyObject(response);
             const message = findMessage(response, shortID);
             const body = message.data.body,
@@ -1133,14 +1133,14 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
                 rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
                 sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
                 wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                mod: window._TBCore.logged,
+                mod: await TBApi.getCurrentUser(),
             };
 
             resolve(info);
         });
     } else {
         const permaCommentLinkRegex = /(\/(?:r|user)\/[^/]*?\/comments\/[^/]*?\/)([^/]*?)(\/[^/]*?\/?)$/;
-        TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(response => {
+        TBApi.getJSON(`/r/${subreddit}/api/info.json`, {id}).then(async response => {
             TBStorage.purifyObject(response);
             const data = response.data;
 
@@ -1200,7 +1200,7 @@ export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve 
                 rules: subreddit ? link(`/r/${subreddit}/about/rules`) : '',
                 sidebar: subreddit ? link(`/r/${subreddit}/about/sidebar`) : '',
                 wiki: subreddit ? link(`/r/${subreddit}/wiki/index`) : '',
-                mod: window._TBCore.logged,
+                mod: await TBApi.getCurrentUser(),
                 userReports: data.children[0].data.user_reports,
                 modReports: data.children[0].data.mod_reports,
                 reportsIgnored: data.children[0].data.ignore_reports,
