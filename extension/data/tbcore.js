@@ -99,6 +99,8 @@ export const config = {
     banMacros: '',
 };
 
+const SETTINGS_NAME = 'Utils';
+
 // Details about the current user
 
 export {getModhash};
@@ -187,6 +189,22 @@ export async function modSubCheck () {
     } else {
         return false;
     }
+}
+
+// A promise we hold onto to ensure the lastVersion is fetched only once, before
+// it gets updated to the current version
+let lastVersionPromise = null;
+
+/**
+ * Gets the version of Toolbox that was used last time the Toolbox content
+ * script was started. Used to tell if the extension was just updated.
+ * @returns {Promise<number>}
+ */
+export function getLastVersion () {
+    if (!lastVersionPromise) {
+        lastVersionPromise = TBStorage.getSettingAsync(SETTINGS_NAME, 'lastVersion', 0);
+    }
+    return lastVersionPromise;
 }
 
 /**
@@ -1318,10 +1336,8 @@ export async function getToolboxDevs () {
 
     TBCore.logged = await TBApi.getCurrentUser();
 
-    const SETTINGS_NAME = 'Utils';
-
     // Private variables
-    let lastVersion = TBStorage.getSetting(SETTINGS_NAME, 'lastVersion', 0);
+    let lastVersion = await getLastVersion();
 
     const cacheName = await TBStorage.getCache('Utils', 'cacheName', ''),
           newLogin = cacheName !== TBCore.logged;
@@ -1329,7 +1345,6 @@ export async function getToolboxDevs () {
     // Public variables
 
     TBCore.ratelimit = TBStorage.getSetting(SETTINGS_NAME, 'ratelimit', {remaining: 300, reset: 600 * 1000});
-    TBCore.firstRun = false;
 
     // Populate `TBCore.mySubs` and `TBCore.mySubsData`
     getModSubs();
@@ -1368,7 +1383,6 @@ export async function getToolboxDevs () {
 
     if (shortVersion > lastVersion) {
         // These need to happen for every version change
-        TBCore.firstRun = true; // for use by other modules.
         TBStorage.setSetting(SETTINGS_NAME, 'lastVersion', shortVersion); // set last version to this version.
         getToolboxDevs(); // always repopulate tb devs for each version change
 

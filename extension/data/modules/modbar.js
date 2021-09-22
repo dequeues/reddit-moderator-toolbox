@@ -3,7 +3,7 @@ import * as TBStorage from '../tbstorage.js';
 import * as TBui from '../tbui.js';
 import * as TBHelpers from '../tbhelpers.js';
 import * as TBCore from '../tbcore.js';
-import * as TBApi from '../tbapi.js'
+import * as TBApi from '../tbapi.js';
 
 export default new Module({
     name: 'Modbar',
@@ -374,9 +374,11 @@ export default new Module({
             `);
     }
 
-    if (window._TBCore.firstRun) {
-        $('.tb-first-run').show().css('display', 'inline-block');
-    }
+    TBCore.getLastVersion().then(lastVersion => {
+        if (lastVersion < TBCore.shortVersion) {
+            $('.tb-first-run').show().css('display', 'inline-block');
+        }
+    });
 
     if (debugMode) {
         // Reload button
