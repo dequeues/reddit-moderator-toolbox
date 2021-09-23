@@ -837,7 +837,7 @@ self.queuetoolsOld = function ({
             TBui.longLoadNonPersistent(true, 'Getting subreddit items...', TBui.FEEDBACK_NEUTRAL);
 
             TBCore.forEachChunked(
-                $('.subscription-box a.title'), 20, 100, async elem => {
+                $('.subscription-box a.title'), 20, 100, elem => {
                     const $elem = $(elem),
                           sr = $elem.text();
 
@@ -854,7 +854,7 @@ self.queuetoolsOld = function ({
                         }
 
                         function updateModqueueCount (sr) {
-                            TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(async d => {
+                            TBApi.getJSON(`/r/${sr}/about/${page}.json?limit=100`).then(d => {
                                 TBStorage.purifyObject(d);
                                 const items = d.data.children.length;
                                 self.log(`  subreddit: ${sr} items: ${items}`);

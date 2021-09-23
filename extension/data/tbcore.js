@@ -1111,7 +1111,7 @@ function findMessage (object, searchID) {
     return found;
 }
 
-export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(async resolve => {
+export const getApiThingInfo = (id, subreddit, modCheck) => new Promise(resolve => {
     if (id.startsWith('t4_')) {
         const shortID = id.substr(3);
         TBApi.getJSON(`/message/messages/${shortID}.json`).then(async response => {

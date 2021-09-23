@@ -742,5 +742,5 @@ function init ({savedSubs, rememberLastAction, globalButton, excludeGlobal}) {
             TBui.textFeedback(`failed to save user flair: ${error.message}`, TBui.FEEDBACK_NEGATIVE);
             $status.text(`error: ${error.message}`);
         });
-});
+    });
 }
